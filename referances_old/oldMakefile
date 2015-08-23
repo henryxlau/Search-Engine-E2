@@ -1,0 +1,39 @@
+
+#Flags:
+CPPFLAGS=-std=c++11 -Wall -g -DDEBUG
+
+#Compiler:
+CC = g++
+
+#Source code directory:
+SRC_DIR = lib
+
+#Header code directory
+HEADER_DIR = lib
+
+#Web resources director
+WEB_REC_DIR = web-resources
+
+#Object code directory:
+OBJ_DIR = bin
+
+all: search_engine clean
+
+search_engine: $(OBJ_DIR)/.dirstamp $(OBJ_DIR)/search.o $(OBJ_DIR)/webpage.o
+	${CC} $(OBJ_DIR)/search.o $(OBJ_DIR)/webpage.o -o $@ ${CPPFLAGS}
+
+$(OBJ_DIR)/webpage.o: $(OBJ_DIR)/.dirstamp
+	$(CC) -o $(OBJ_DIR)/webpage.o -c web-resources/webpage.cpp $(CPPFLAGS) -I${HEADER_DIR}/
+
+$(OBJ_DIR)/search.o: $(OBJ_DIR)/.dirstamp $(OBJ_DIR)/webpage.o
+	$(CC) -o $(OBJ_DIR)/search.o -c search.cpp  $(CPPFLAGS) -I${HEADER_DIR}/ -I${WEB_REC_DIR}/
+
+$(OBJ_DIR)/.dirstamp:
+	-@mkdir -p $(OBJ_DIR) && touch $@
+
+#Phony targets
+
+PHONY: clean
+
+clean:
+	-@rm -rf $(OBJ_DIR)
